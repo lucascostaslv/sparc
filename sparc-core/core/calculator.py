@@ -1,13 +1,14 @@
-from .device import Device
+import numpy as np
+
+from device import Device
 
 
 class EnergyCalculator:
     def calculate(self, device: Device) -> float:
-        """Retorna o consumo mensal em kWh de um único dispositivo."""
-        ...
+        return device.monthly_consumption()
 
     def calculate_all(self, devices: list[Device]) -> list[float]:
-        """Retorna uma lista com o consumo mensal de cada dispositivo,
-        na mesma ordem da lista recebida.
-        """
-        ...
+        powers = np.array([d.power_w for d in devices])
+        hours = np.array([d.usage_hours for d in devices])
+        return (powers * hours / 1000 * 30).tolist()
+

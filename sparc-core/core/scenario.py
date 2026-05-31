@@ -1,21 +1,24 @@
-from .device import Device
+import numpy as np
+
+from device import Device
 
 
 class Scenario:
-    def __init__(self, name: str):
+    name: str
+    devices: list[Device]
+
+    def __init__(self, name):
         self.name = name
-        self.devices: list[Device] = []
+        self.devices = []
 
-    def add_device(self, device: Device) -> None:
-        """Adiciona um dispositivo ao cenário."""
-        ...
 
-    def remove_device(self, name: str) -> None:
-        """Remove o dispositivo com o nome informado.
-        Não faz nada se o nome não existir.
-        """
-        ...
+    def add_device(self, device: Device):
+        self.devices.append(device)
+
+
+    def remove_device(self, name: str):
+        self.devices = [device for device in self.devices if device.name != name]
+
 
     def total_consumption(self) -> float:
-        """Retorna a soma do consumo mensal de todos os dispositivos do cenário."""
-        ...
+        return float(np.sum([d.monthly_consumption() for d in self.devices]))
