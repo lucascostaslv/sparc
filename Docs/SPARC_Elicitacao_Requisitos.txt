@@ -50,6 +50,10 @@ intuitiva.
   - Simulação de consumo diário e mensal de cada dispositivo.
   - Análise de eficiência energética com base nos dados inseridos.
   - Visualização de resultados por meio de gráficos e tabelas.
+  - Criação e comparação de múltiplos cenários de uso.
+  - Análise financeira de break-even: cálculo do custo acumulado ao longo de
+    60 meses considerando conta de luz e parcelamento de novos equipamentos,
+    com identificação do mês exato em que o investimento se paga.
 
 3.2 Limitações (fora do escopo)
 ---------------------------------
@@ -117,8 +121,9 @@ O sistema deve apresentar uma tela de análise de eficiência que exiba:
 RF09 — Exibição de custo estimado
 -----------------------------------
 O sistema deve calcular e exibir o custo financeiro estimado do consumo
-total em Reais (R$), com base em uma tarifa configurável (R$/kWh). Também
-deve ser exibida a média diária de consumo.
+total em Reais (R$), com base em uma tarifa fixa de R$ 0,60/kWh (não
+configurável pelo usuário na versão atual). Também deve ser exibida a
+média diária de consumo.
 
 RF10 — Classificação do consumo por nível
 -------------------------------------------
@@ -305,8 +310,14 @@ O sistema adota a Arquitetura Hexagonal, organizada em três camadas:
                    break_even(s1, s2, tariff, months=60): dict
 
   [Adapters]
-    - GUIAdapter      → implementa InputPort (interface desktop PyQt)
-    - ChartAdapter    → implementa OutputPort (gráficos via Matplotlib)
+    - MainWindow (gui_adapter.py) → QMainWindow; orquestra as 4 abas e o
+                                    menu Sessão. Não implementa InputPort —
+                                    a entrada do usuário é tratada diretamente
+                                    pelas tabs (DeviceTab).
+    - ChartAdapter    → implementa parcialmente OutputPort (gráficos via
+                        Matplotlib); não implementa display_break_even().
+                        Na versão atual as tabs embuttam matplotlib
+                        diretamente e não usam ChartAdapter.
     - CSVAdapter      → implementa DataPort (persistência em CSV/JSON)
 
 7.3 Evolução da Modelagem (versões)
@@ -381,7 +392,20 @@ O sistema adota a Arquitetura Hexagonal, organizada em três camadas:
     - Usar modo econômico no computador             →  12 kWh/mês (Baixo)
     - Reduzir tempo de televisão para 4h/dia        → 6,6 kWh/mês (Baixo)
 
-  Navegação da interface: barra de abas no topo com as 3 telas acima.
+  Navegação da interface: barra de abas no topo com as 4 telas acima
+  (a Aba 4 — Comparação de Cenários foi adicionada na implementação final;
+  ver seção 9.4 abaixo).
+
+9.4 Tela: Comparação de Cenários
+----------------------------------
+  Dropdowns para seleção de cenário base e cenário novo.
+  Botão "Comparar".
+  Dois gráficos lado a lado:
+    - Esquerda: barras duplas de consumo mensal (kWh) por dispositivo
+    - Direita:  linhas de custo acumulado (R$) ao longo de 60 meses,
+                com linha vertical vermelha no mês do break-even
+  Texto indicando o mês exato do ponto de equilíbrio, ou informando que
+  o investimento não se paga dentro do prazo de 60 meses.
 
 
 ================================================================================
