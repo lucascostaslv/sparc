@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-from sparc_core.ports.output_port import OutputPort
+from ports.output_port import OutputPort
 
 
 class ChartAdapter(OutputPort):

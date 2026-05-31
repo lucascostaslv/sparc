@@ -28,3 +28,19 @@ class OutputPort(ABC):
         }
         """
         ...
+
+    @abstractmethod
+    def display_break_even(self, data: dict) -> None:
+        """Exibe o gráfico de linha com o ponto de equilíbrio entre dois cenários.
+
+        Espera o dict retornado por ScenarioSimulator.break_even():
+        {
+            "months":           list[int],
+            "cumulative_s1":    list[float],
+            "cumulative_s2":    list[float],
+            "break_even_month": int | None,
+            "scenario_1_name":  str,
+            "scenario_2_name":  str,
+        }
+        """
+        ...
