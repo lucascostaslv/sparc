@@ -1,19 +1,29 @@
 # PROJETO SPARC
 
-## Dependencias
+## Dependências
 
-É necessário ter o python na versão 3.14 para rodar o projeto.
+É necessário ter o Python na versão **3.12 ou superior** para rodar o projeto.
 
 ### Bibliotecas
 
-numpy 
-pandas
-matplotlib
-PyQt6
+- numpy
+- pandas
+- matplotlib
+- PyQt6
 
-#### No windows : pip install <nome_da_biblioteca>
-#### Baseado em Unix: pip3 install <nome_da_biblioteca> --user
-(caso não tenha pip no linux ou mac) : sudo apt install python3-<<nome_da_biblioteca>>
+### Instalação
+
+Recomenda-se criar um ambiente virtual antes de instalar as dependências:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate        # Linux / macOS
+# .venv\Scripts\activate         # Windows
+
+pip install -r requirements.txt
+```
+
+> **Nota:** Em sistemas macOS e Linux modernos, a instalação global com `pip install --user` pode falhar por causa do PEP 668. Use sempre um venv.
 
 ## Rodar
 Basta usar o comando: **python3 sparc-ui/main.py** ou **python sparc-ui/main.py**

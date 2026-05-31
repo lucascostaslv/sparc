@@ -1,3 +1,8 @@
 CLAUDE.md
 NOTAS_IMPLEMENTACAO.md
 VISAO_GERAL_PROJETO.txt
+
+# Python
+.venv/
+__pycache__/
+*.pyc

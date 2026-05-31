@@ -1,0 +1,410 @@
+================================================================================
+DOCUMENTO DE ELICITAÇÃO DE REQUISITOS
+Sistema SPARC — System for Power Analysis, Reporting & Control
+================================================================================
+
+Projeto:     SPARC — System for Power Analysis, Reporting & Control
+Área:        Ciências e Saúde — Física
+Equipe:      Manoel Pedro, Lucas Vasconcellos, Otávio Augusto,
+             Luís Fernando e Lucas Costa
+Autor:       Lucas Silva (Canva)
+Data:        Maio/2026
+--------------------------------------------------------------------------------
+
+
+================================================================================
+1. CONTEXTO E MOTIVAÇÃO
+================================================================================
+
+O consumo de energia em ambientes residenciais e comerciais é frequentemente
+ineficiente, resultando em custos elevados e desperdício de recursos. Três
+problemas centrais justificam a criação do sistema:
+
+  1. A energia elétrica impacta diretamente a qualidade de vida das pessoas.
+  2. O consumo ineficiente gera custos financeiros elevados e impacto ambiental
+     negativo.
+  3. Existe falta de visibilidade sobre o consumo individualizado por
+     dispositivo, dificultando a tomada de decisões.
+
+Proposta: desenvolver um sistema capaz de simular o consumo energético e
+fornecer análises de eficiência para residências e estabelecimentos comerciais.
+
+
+================================================================================
+2. OBJETIVO DO PROJETO
+================================================================================
+
+Desenvolver um sistema para simulação e análise de consumo energético em
+ambientes residenciais e comerciais, permitindo que o usuário compreenda,
+monitore e otimize o uso de energia elétrica por meio de uma interface desktop
+intuitiva.
+
+
+================================================================================
+3. ESCOPO DO SISTEMA
+================================================================================
+
+3.1 Funcionalidades previstas no escopo
+----------------------------------------
+  - Entrada de dados de dispositivos elétricos (nome, potência e horas de uso).
+  - Simulação de consumo diário e mensal de cada dispositivo.
+  - Análise de eficiência energética com base nos dados inseridos.
+  - Visualização de resultados por meio de gráficos e tabelas.
+
+3.2 Limitações (fora do escopo)
+---------------------------------
+  - O sistema NÃO considera tarifas dinâmicas de energia.
+  - O sistema NÃO considera perdas elétricas reais ocorridas na instalação.
+  - Os dados são inseridos manualmente pelo usuário (sem integração automática
+    com medidores ou dispositivos IoT nesta versão).
+
+
+================================================================================
+4. REQUISITOS FUNCIONAIS
+================================================================================
+
+RF01 — Cadastro de dispositivos elétricos
+------------------------------------------
+O sistema deve permitir que o usuário cadastre dispositivos elétricos,
+informando os seguintes atributos:
+  - Nome do dispositivo (ex.: Ar-condicionado, Geladeira, Televisão).
+  - Potência em Watts (W).
+  - Tempo de uso diário em horas por dia (h/dia).
+
+RF02 — Edição de dispositivos
+-------------------------------
+O sistema deve permitir que o usuário edite as informações de qualquer
+dispositivo previamente cadastrado (nome, potência e tempo de uso).
+
+RF03 — Remoção de dispositivos
+--------------------------------
+O sistema deve permitir que o usuário remova um dispositivo do cadastro,
+excluindo-o da lista e de todos os cálculos subsequentes.
+
+RF04 — Cálculo de consumo energético individual
+-------------------------------------------------
+Para cada dispositivo cadastrado, o sistema deve calcular automaticamente:
+  - Consumo diário em kWh/dia.
+  - Consumo mensal em kWh/mês (considerando 30 dias).
+  A fórmula base é: Consumo (kWh) = Potência (W) × Horas de uso ÷ 1000.
+
+RF05 — Cálculo de consumo total do ambiente
+--------------------------------------------
+O sistema deve calcular e exibir o consumo energético total de todos os
+dispositivos cadastrados, tanto diário quanto mensal.
+
+RF06 — Simulação e comparação de cenários de uso
+-------------------------------------------------
+O sistema deve permitir ao usuário criar e simular diferentes cenários de uso
+(ex.: cenário atual vs. cenário otimizado), possibilitando a comparação entre
+eles para identificar oportunidades de economia.
+
+RF07 — Visualização de gráficos de consumo
+-------------------------------------------
+O sistema deve exibir gráficos comparativos de consumo, mostrando:
+  - Consumo por dispositivo (em kWh/mês), de forma visual e de fácil leitura.
+  - Comparação entre consumo atual e consumo otimizado por dispositivo.
+
+RF08 — Análise de eficiência energética
+-----------------------------------------
+O sistema deve apresentar uma tela de análise de eficiência que exiba:
+  - Consumo atual do ambiente (kWh/mês).
+  - Consumo otimizado projetado (kWh/mês).
+  - Potencial de economia em kWh e em percentual de redução.
+  - Lista de sugestões de otimização por dispositivo, com a economia estimada
+    em kWh/mês e classificação do impacto (Alto, Médio ou Baixo).
+
+RF09 — Exibição de custo estimado
+-----------------------------------
+O sistema deve calcular e exibir o custo financeiro estimado do consumo
+total em Reais (R$), com base em uma tarifa configurável (R$/kWh). Também
+deve ser exibida a média diária de consumo.
+
+RF10 — Classificação do consumo por nível
+-------------------------------------------
+Na listagem de consumo individual, o sistema deve classificar cada dispositivo
+por nível de consumo: Alto, Médio ou Baixo, facilitando a identificação dos
+maiores consumidores.
+
+RF11 — Salvar sessão
+----------------------
+O sistema deve permitir que o usuário salve a sessão atual (lista de
+dispositivos e cenários configurados) em arquivo externo nos formatos CSV
+ou JSON, escolhendo o diretório de destino.
+
+RF12 — Carregar sessão
+-----------------------
+O sistema deve permitir que o usuário carregue uma sessão previamente salva
+(CSV ou JSON), restaurando a lista de dispositivos e cenários no estado em
+que foram salvos.
+
+
+================================================================================
+5. REQUISITOS NÃO FUNCIONAIS
+================================================================================
+
+5.1 Desempenho
+---------------
+  - Os cálculos de consumo devem ser concluídos em menos de 200 ms para
+    ambientes com até 50 dispositivos cadastrados.
+  - Os gráficos e a interface devem ser atualizados em menos de 1 segundo após
+    qualquer alteração nos dados.
+
+5.2 Usabilidade
+----------------
+  - Todas as funcionalidades principais devem ser acessíveis em no máximo
+    3 cliques a partir da tela inicial.
+  - A curva de aprendizado para um usuário leigo (sem conhecimento técnico)
+    deve ser inferior a 5 minutos.
+
+5.3 Precisão
+-------------
+  - O erro máximo tolerado nos cálculos de consumo é de 0,01 kWh por
+    dispositivo.
+  - Os resultados devem ser apresentados com 2 casas decimais em kWh.
+
+5.4 Privacidade
+----------------
+  - O sistema não deve coletar nem transmitir dados pessoais do usuário.
+  - Os arquivos de sessão (CSV/JSON) devem ser salvos exclusivamente no
+    diretório escolhido pelo próprio usuário, sem envio a servidores externos.
+
+
+================================================================================
+6. CASOS DE USO
+================================================================================
+
+Ator principal: Usuário (único ator identificado no sistema).
+
+UC01 — Cadastrar Dispositivo
+  Ator: Usuário
+  Descrição: O usuário informa nome, potência (W) e tempo de uso (h/dia) de
+  um dispositivo e confirma o cadastro. O sistema valida os dados, registra o
+  dispositivo e recalcula os totais.
+
+UC02 — Editar Dispositivo
+  Ator: Usuário
+  Inclui: UC01 (Cadastrar Dispositivo como base de dados)
+  Descrição: O usuário seleciona um dispositivo existente, altera um ou mais
+  campos e salva as modificações. O sistema atualiza os cálculos.
+
+UC03 — Remover Dispositivo
+  Ator: Usuário
+  Descrição: O usuário seleciona um dispositivo e solicita sua remoção. O
+  sistema exclui o registro e recalcula os totais.
+
+UC04 — Simular Consumo
+  Ator: Usuário
+  Inclui: UC05 (Comparar Cenários)
+  Descrição: O usuário aciona a simulação. O sistema calcula o consumo
+  individual e total de todos os dispositivos cadastrados e apresenta os
+  resultados em tabela e gráficos.
+
+UC05 — Comparar Cenários
+  Ator: Usuário
+  Estende: UC04 (Simular Consumo)
+  Descrição: Com dois ou mais cenários configurados, o usuário solicita a
+  comparação. O sistema exibe lado a lado os consumos dos cenários e destaca
+  as diferenças.
+
+UC06 — Visualizar Gráfico de Consumo
+  Ator: Usuário
+  Descrição: O usuário navega para a aba de visualização. O sistema exibe
+  gráficos de barras com o consumo por dispositivo e o total do ambiente.
+
+UC07 — Salvar Sessão
+  Ator: Usuário
+  Descrição: O usuário aciona a opção de salvar. O sistema exporta os dados
+  da sessão atual para um arquivo CSV ou JSON no diretório indicado pelo
+  usuário.
+
+UC08 — Carregar Sessão
+  Ator: Usuário
+  Estende: UC07 (Salvar Sessão — depende de sessão previamente salva)
+  Descrição: O usuário seleciona um arquivo de sessão CSV ou JSON. O sistema
+  lê o arquivo, valida o conteúdo e restaura o estado anterior dos dados.
+
+
+================================================================================
+7. ARQUITETURA E MODELAGEM
+================================================================================
+
+7.1 Padrão Arquitetural — Hexagonal (Ports & Adapters)
+-------------------------------------------------------
+O sistema adota a Arquitetura Hexagonal, organizada em três camadas:
+
+  Core (Domínio):
+    - Contém a lógica principal do negócio.
+    - É independente de frameworks, interface ou bibliotecas externas.
+    - Pode ser testado isoladamente, sem abrir a interface gráfica.
+
+  Ports (Interfaces/Contratos):
+    - Definem como o Core se comunica com o mundo exterior.
+    - Garantem o desacoplamento entre a lógica de negócio e a implementação.
+
+  Adapters (Implementações):
+    - Implementam as interfaces para entrada (GUI), saída (gráficos) e dados
+      (persistência CSV/JSON).
+    - Podem ser substituídos sem alterar o Core (ex.: trocar CSV por banco de
+      dados futuramente, ou adicionar interface web sem modificar as regras
+      de negócio).
+
+7.2 Diagrama de Classes — Entidades principais
+-----------------------------------------------
+
+  [Ports]
+    - InputPort
+        get_device_data(): dict   (name, power_w, usage_hours)
+        get_scenario_name(): str
+    - OutputPort
+        display_consumption(data: dict)
+        display_comparison(comparison: dict)
+        display_break_even(data: dict)
+    - DataPort
+        save(scenarios, filepath)
+        load(filepath): list
+
+  [Core]
+    - Device
+        Atributos: name (str), power_w (float), usage_hours (float),
+                   cost_price (float), installments (InstallmentsDevices | None)
+        Métodos:   daily_consumption(): float
+                   monthly_consumption(): float
+                   installment_cost_at_month(month: int): float
+
+    - InstallmentsDevices
+        Atributos: qdt_installments (float), value_installment (float)
+
+    - KWHCost
+        Atributos: value (float)
+
+    - Bill
+        Atributos: consumption_total (float), date (datetime)
+        Métodos:   getBillCost(costLocal: KWHCost): float
+
+    - HistoricalBills
+        Atributos: bills (list[Bill])
+        Métodos:   addBill(bill), removeBill(bill)
+
+    - EnergyCalculator
+        Métodos: calculate(device): float
+                 calculate_all(devices): list[float]
+
+    - Scenario
+        Atributos: name (str), devices (list[Device])
+        Métodos:   total_consumption(): float
+                   add_device(device)
+                   remove_device(name)
+        Relação:   1 Scenario — 0..n Devices
+
+    - ScenarioSimulator
+        Atributos: scenarios (list[Scenario])
+        Métodos:   add_scenario(scenario)
+                   simulate(scenario): dict
+                   compare(s1, s2): dict
+                   break_even(s1, s2, tariff, months=60): dict
+
+  [Adapters]
+    - GUIAdapter      → implementa InputPort (interface desktop PyQt)
+    - ChartAdapter    → implementa OutputPort (gráficos via Matplotlib)
+    - CSVAdapter      → implementa DataPort (persistência em CSV/JSON)
+
+7.3 Evolução da Modelagem (versões)
+------------------------------------
+  Versão 1 — Estrutura inicial:
+    Uma única função calculando o consumo total, sem separação de
+    responsabilidades.
+
+  Versão 2 — Separação por entidades:
+    Criação da classe Device para encapsular os dados de cada dispositivo.
+    Separação entre a lógica de cálculo e a representação dos dados.
+
+  Versão 3 — Arquitetura Hexagonal (versão atual):
+    Introdução de Ports e Adapters. Isolamento do Core em relação à interface
+    e à persistência, permitindo extensibilidade e testabilidade independente.
+
+  Benefícios obtidos com a evolução:
+    - Testes do Core sem necessidade de abrir a interface gráfica.
+    - Possibilidade de trocar CSV por banco de dados sem alterar o domínio.
+    - Adição de novo adapter web sem modificar a lógica de negócio.
+
+
+================================================================================
+8. TECNOLOGIAS E BIBLIOTECAS
+================================================================================
+
+  - NumPy       — Cálculos numéricos de consumo energético.
+  - Matplotlib  — Geração dos gráficos de visualização.
+  - Pandas      — Manipulação e análise de dados tabulares.
+  - PyQt6       — Interface gráfica desktop.
+
+
+================================================================================
+9. PROTÓTIPO DE INTERFACE (TELAS IDENTIFICADAS)
+================================================================================
+
+9.1 Tela: Cadastro de Dispositivos
+------------------------------------
+  Campos de entrada:
+    - Nome do Dispositivo (campo texto, ex.: "Ar-condicionado")
+    - Potência (W) (campo numérico, ex.: "1500")
+    - Tempo de uso (h/dia) (campo numérico, ex.: "8")
+  Ação: botão "+ Adicionar"
+  Listagem inferior com todos os dispositivos cadastrados, exibindo:
+    - Dispositivo | Potência (W) | Tempo de uso (h/dia) | Consumo (kWh/mês)
+    - Botão "Remover" por linha
+
+9.2 Tela: Visualização de Consumo
+-----------------------------------
+  Cards de resumo:
+    - Consumo Total (kWh/mês)
+    - Custo Estimado (R$) com base na tarifa de R$ 0,60/kWh
+    - Média Diária (kWh)
+  Gráfico de barras: Consumo por dispositivo (kWh/mês)
+  Tabela detalhada (Consumo Individual):
+    - Dispositivo | Potência (W) | Consumo (kWh/mês) | Custo (R$/mês)
+      | % do Total | Nível (Alto/Médio/Baixo)
+
+9.3 Tela: Análise de Eficiência
+---------------------------------
+  Cards de comparação:
+    - Consumo Atual (kWh/mês)
+    - Consumo Otimizado (kWh/mês)
+    - Potencial de Economia (kWh e % de redução)
+  Gráfico de barras duplas: Atual vs. Otimizado por dispositivo
+  Tabela de sugestões de otimização:
+    - Sugestão | Economia Estimada (kWh/mês) | Impacto (Alto/Médio/Baixo)
+  Exemplos de sugestões geradas pelo sistema:
+    - Substituir ar-condicionado por modelo inverter → 144 kWh/mês (Alto)
+    - Reduzir uso do ar-condicionado para 5h/dia   → 108 kWh/mês (Alto)
+    - Trocar geladeira por modelo classe A+++        →  18 kWh/mês (Médio)
+    - Usar modo econômico no computador             →  12 kWh/mês (Baixo)
+    - Reduzir tempo de televisão para 4h/dia        → 6,6 kWh/mês (Baixo)
+
+  Navegação da interface: barra de abas no topo com as 3 telas acima.
+
+
+================================================================================
+10. PRÓXIMOS PASSOS E EXTENSÕES FUTURAS
+================================================================================
+
+10.1 Atividades planejadas
+---------------------------
+  - Implementação completa do sistema conforme arquitetura definida.
+  - Testes com dados reais de consumo doméstico e comercial.
+  - Integração com tarifas energéticas reais (ex.: ANEEL).
+  - Geração automática de recomendações baseada em perfil de uso.
+  - Evolução do sistema para aplicação web.
+
+10.2 Possíveis extensões
+--------------------------
+  - Integração com dispositivos IoT para coleta automática de dados em
+    tempo real (eliminando a inserção manual).
+  - Monitoramento em tempo real do consumo.
+  - Uso de TensorFlow/SciPy para modelos preditivos de consumo comercial.
+  - Uso de Django para exposição das métricas via API REST.
+
+
+================================================================================
+FIM DO DOCUMENTO
+================================================================================
