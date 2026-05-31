@@ -1,22 +1,66 @@
 # PROJETO SPARC
 
-## Dependencias
+**SPARC — System for Power Analysis, Reporting & Control**
 
-É necessário ter o python na versão 3.14 para rodar o projeto.
+Sistema desktop para simulação e análise de consumo energético residencial ou comercial. O usuário cadastra dispositivos elétricos, visualiza gráficos de consumo, compara cenários de troca de equipamentos e descobre quando um investimento começa a compensar financeiramente.
+
+## Estrutura do Projeto
+
+```
+sparc/
+├── sparc-core/       # Lógica de negócio pura (independente de interface)
+│   ├── core/         # Entidades e regras de negócio
+│   ├── ports/        # Contratos abstratos (interfaces)
+│   └── adapters/     # Implementações concretas (gráficos, CSV)
+└── sparc-ui/         # Interface gráfica PyQt6
+    ├── adapters/     # Janela principal
+    ├── tabs/         # Abas da interface
+    └── main.py       # Ponto de entrada
+```
+
+O projeto adota arquitetura hexagonal (Ports & Adapters): o `sparc-core` não conhece a interface gráfica e pode ser testado isoladamente.
+
+## Dependências
 
 ### Bibliotecas
 
-numpy 
-pandas
-matplotlib
-PyQt6
+- numpy
+- pandas
+- matplotlib
+- PyQt6
 
-#### No windows : pip install <nome_da_biblioteca>
-#### Baseado em Unix: pip3 install <nome_da_biblioteca> --user
-(caso não tenha pip no linux ou mac) : sudo apt install python3-<<nome_da_biblioteca>>
+### Instalação
+
+Recomenda-se criar um ambiente virtual antes de instalar as dependências.
+
+**Linux / Windows:**
+```bash
+python3 -m venv .venv
+source .venv/bin/activate        # Linux
+# .venv\Scripts\activate         # Windows
+
+pip install -r requirements.txt
+```
+
+**macOS (Homebrew):**
+
+Em versões recentes do macOS o PyQt6 via pip pode falhar ou crashar. Use o Python 3.14 do Homebrew que acompanha o PyQt6:
+
+```bash
+python3.14 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+> **Nota:** A instalação global com `pip install` falha no macOS por causa do PEP 668. Use sempre um venv.
 
 ## Rodar
-Basta usar o comando: **python3 sparc-ui/main.py** ou **python sparc-ui/main.py**
+
+Execute a partir da **raiz do projeto**:
+
+```bash
+python sparc-ui/main.py
+```
 
 ---
 
@@ -27,10 +71,12 @@ Aqui você cadastra os dispositivos elétricos que quer analisar. Preenche o nom
 
 Você pode ter mais de um cenário, por exemplo "Casa Atual" e "Com Ar Inverter". Basta clicar em **+ Novo Cenário** e trocar pelo dropdown.
 
-Os dispositivos aparecem na tabela abaixo e podem ser editados com duplo clique ou removidos pelo botão da linha.
+Os dispositivos aparecem na tabela abaixo (colunas: Dispositivo, Potência (W), Tempo (h/dia), Consumo (kWh/mês), Preço (R$)) e podem ser editados com duplo clique ou removidos pelo botão da linha.
 
 ### Aba 2 — Visualização de Consumo
 Mostra o consumo do cenário que está selecionado na Aba 1. Tem três cards no topo com o consumo total em kWh/mês, o custo estimado em R$ e a média diária.
+
+O custo é calculado com base na tarifa fixa de **R$ 0,60/kWh**.
 
 Abaixo tem um gráfico de barras com o consumo de cada dispositivo e uma tabela detalhada mostrando o percentual que cada um representa no total e o nível de consumo (Alto, Médio ou Baixo).
 
