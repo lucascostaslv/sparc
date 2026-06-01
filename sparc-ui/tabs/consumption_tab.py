@@ -6,14 +6,14 @@ from matplotlib.figure import Figure
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout,
     QLabel, QFrame, QTableWidget, QTableWidgetItem,
-    QHeaderView, QSizePolicy,
+    QHeaderView, QSizePolicy, QDoubleSpinBox,
 )
 from PyQt6.QtCore import Qt
 
 from scenario import Scenario
 from simulator import ScenarioSimulator
 
-TARIFF = 0.60
+DEFAULT_TARIFF = 0.60
 
 
 class ConsumptionTab(QWidget):
@@ -21,11 +21,23 @@ class ConsumptionTab(QWidget):
         super().__init__()
         self.simulator = simulator
         self._card_labels: dict[str, QLabel] = {}
+        self._last_scenario: Scenario | None = None
         self._build_ui()
 
     def _build_ui(self):
         layout = QVBoxLayout(self)
         layout.setContentsMargins(12, 12, 12, 12)
+
+        tariff_row = QHBoxLayout()
+        tariff_row.addStretch()
+        tariff_row.addWidget(QLabel("Tarifa (R$/kWh):"))
+        self.tariff_spin = QDoubleSpinBox()
+        self.tariff_spin.setRange(0.01, 9.99)
+        self.tariff_spin.setDecimals(2)
+        self.tariff_spin.setSingleStep(0.01)
+        self.tariff_spin.setValue(DEFAULT_TARIFF)
+        self.tariff_spin.valueChanged.connect(lambda _: self._do_refresh())
+        tariff_row.addWidget(self.tariff_spin)
 
         cards = QHBoxLayout()
         cards.addWidget(self._make_card("c_total", "Consumo Total",  "0.00 kWh/mês"))
@@ -43,11 +55,21 @@ class ConsumptionTab(QWidget):
         self.table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
         self.table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
 
+        layout.addLayout(tariff_row)
         layout.addLayout(cards)
         layout.addWidget(self.canvas)
         layout.addWidget(self.table)
 
     def refresh(self, scenario: Scenario):
+        self._last_scenario = scenario
+        self._do_refresh()
+
+    def _do_refresh(self):
+        scenario = self._last_scenario
+        if scenario is None:
+            return
+        tariff = self.tariff_spin.value()
+
         if not scenario.devices:
             self._set_card("c_total", "0.00 kWh/mês")
             self._set_card("c_cost",  "R$ 0.00")
@@ -60,7 +82,7 @@ class ConsumptionTab(QWidget):
         total  = result["total_monthly_kwh"]
 
         self._set_card("c_total", f"{total:.2f} kWh/mês")
-        self._set_card("c_cost",  f"R$ {total * TARIFF:.2f}")
+        self._set_card("c_cost",  f"R$ {total * tariff:.2f}")
         self._set_card("c_daily", f"{total / 30:.2f} kWh/dia")
 
         self.fig.clear()
@@ -85,7 +107,7 @@ class ConsumptionTab(QWidget):
             level = self._classify(pct)
             for col, val in enumerate([
                 d["name"], f"{power_map.get(d['name'], 0):.0f}",
-                f"{d['monthly_kwh']:.2f}", f"R$ {d['monthly_kwh'] * TARIFF:.2f}",
+                f"{d['monthly_kwh']:.2f}", f"R$ {d['monthly_kwh'] * tariff:.2f}",
                 f"{pct:.1f}%", level,
             ]):
                 self.table.setItem(row, col, QTableWidgetItem(val))

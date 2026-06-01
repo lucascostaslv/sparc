@@ -5,14 +5,14 @@ from matplotlib.figure import Figure
 
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout,
-    QLabel, QPushButton, QComboBox, QMessageBox,
+    QLabel, QPushButton, QComboBox, QMessageBox, QDoubleSpinBox,
 )
 from PyQt6.QtCore import Qt
 
 from scenario import Scenario
 from simulator import ScenarioSimulator
 
-TARIFF = 0.60
+DEFAULT_TARIFF = 0.60
 BREAK_EVEN_MONTHS = 60
 
 
@@ -37,7 +37,15 @@ class ComparisonTab(QWidget):
         sel_row.addWidget(self.combo2)
         compare_btn = QPushButton("Comparar"); compare_btn.setFixedWidth(100)
         compare_btn.clicked.connect(self._run_comparison)
-        sel_row.addSpacing(12); sel_row.addWidget(compare_btn); sel_row.addStretch()
+        sel_row.addSpacing(12); sel_row.addWidget(compare_btn)
+        sel_row.addStretch()
+        sel_row.addWidget(QLabel("Tarifa (R$/kWh):"))
+        self.tariff_spin = QDoubleSpinBox()
+        self.tariff_spin.setRange(0.01, 9.99)
+        self.tariff_spin.setDecimals(2)
+        self.tariff_spin.setSingleStep(0.01)
+        self.tariff_spin.setValue(DEFAULT_TARIFF)
+        sel_row.addWidget(self.tariff_spin)
 
         self.fig = Figure(figsize=(11, 4), tight_layout=True)
         self.canvas = FigureCanvasQTAgg(self.fig)
@@ -75,7 +83,7 @@ class ComparisonTab(QWidget):
             return
 
         comparison = self.simulator.compare(s1, s2)
-        break_data = self.simulator.break_even(s1, s2, TARIFF, BREAK_EVEN_MONTHS)
+        break_data = self.simulator.break_even(s1, s2, self.tariff_spin.value(), BREAK_EVEN_MONTHS)
 
         self.fig.clear()
         ax_bar  = self.fig.add_subplot(1, 2, 1)
@@ -93,7 +101,7 @@ class ComparisonTab(QWidget):
         else:
             self.info_label.setText(
                 f"'{s2.name}' não compensa em {BREAK_EVEN_MONTHS} meses "
-                f"com tarifa de R$ {TARIFF:.2f}/kWh."
+                f"com tarifa de R$ {self.tariff_spin.value():.2f}/kWh."
             )
 
     def _draw_bar_chart(self, ax, comparison: dict, s1: Scenario, s2: Scenario):

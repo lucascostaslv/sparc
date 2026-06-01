@@ -5,7 +5,7 @@ from ports.output_port import OutputPort
 
 
 class ChartAdapter(OutputPort):
-    def display_consumption(self, data: dict) -> None:
+    def display_consumption(self, data: dict) -> plt.Figure:
         devices = data["devices"]
         names = [d["name"] for d in devices]
         values = [d["monthly_kwh"] for d in devices]
@@ -31,7 +31,7 @@ class ChartAdapter(OutputPort):
         plt.tight_layout()
         return fig
 
-    def display_comparison(self, comparison: dict) -> None:
+    def display_comparison(self, comparison: dict) -> plt.Figure:
         s1 = comparison["scenario_1"]
         s2 = comparison["scenario_2"]
 
@@ -70,5 +70,35 @@ class ChartAdapter(OutputPort):
                     fontsize=8,
                 )
 
+        plt.tight_layout()
+        return fig
+
+    def display_break_even(self, data: dict) -> plt.Figure:
+        months = data["months"]
+        cum1   = data["cumulative_s1"]
+        cum2   = data["cumulative_s2"]
+        bep    = data["break_even_month"]
+        name1  = data["scenario_1_name"]
+        name2  = data["scenario_2_name"]
+
+        fig, ax = plt.subplots(figsize=(9, 5))
+        ax.plot(months, cum1, label=f"{name1} (base)",  color="#4C72B0", linewidth=2)
+        ax.plot(months, cum2, label=f"{name2} (novo)",  color="#E88720", linewidth=2, linestyle="--")
+
+        if bep is not None:
+            ax.axvline(bep, color="red", linestyle=":", linewidth=1.5)
+            ax.annotate(
+                f"Break-even\nMês {bep}",
+                xy=(bep, cum2[bep - 1]),
+                xytext=(bep + 2, cum2[bep - 1] * 0.92),
+                fontsize=9,
+                color="red",
+                arrowprops=dict(arrowstyle="->", color="red"),
+            )
+
+        ax.set_title(f"Custo Acumulado em {len(months)} meses (R$)")
+        ax.set_xlabel("Meses")
+        ax.set_ylabel("R$")
+        ax.legend()
         plt.tight_layout()
         return fig
